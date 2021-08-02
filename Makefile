@@ -4,14 +4,15 @@ LDFLAGS ?=
 
 PROG := su-exec
 SRCS := $(PROG).c
+BUILD_ESSENTIAL := apk add build-base
 
 all: $(PROG)
 
 $(PROG): $(SRCS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	docker run --rm -it -v $$PWD:/app alpine sh -c "cd /app;$(BUILD_ESSENTIAL);$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)"
 
 $(PROG)-static: $(SRCS)
-	$(CC) $(CFLAGS) -o $@ $^ -static $(LDFLAGS)
+	docker run --rm -it -v $$PWD:/app alpine sh -c "cd /app;$(BUILD_ESSENTIAL);$(CC) $(CFLAGS) -o $@ $^ -static $(LDFLAGS)"
 
 clean:
 	rm -f $(PROG) $(PROG)-static
